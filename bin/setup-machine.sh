@@ -45,6 +45,7 @@ function install_packages() {
     libxml2-utils
     meld
     nano
+    neovim
     p7zip-full
     p7zip-rar
     perl
@@ -54,6 +55,16 @@ function install_packages() {
     x11-utils
     xsel
     zsh
+    libbz2-dev
+    libgdbm-dev
+    libgdbm-compat-dev
+    libsqlite3-dev
+    libreadline6-dev
+    libncurses5-dev
+    libssl-dev
+    zlib1g-dev
+    liblzma-dev
+    tk-dev
   )
 
   if [[ "$WSL" == 1 ]]; then
@@ -74,15 +85,15 @@ function change_shell() {
   chsh -s "$(grep -E '/zsh$' /etc/shells | tail -1)"
 }
 
-# Install Visual Studio Code.
-function install_vscode() {
-  test $WSL -eq 0 || return 0
-  test ! -f /usr/bin/code || return 0
-  local VSCODE_DEB=$(mktemp)
-  curl -L 'https://go.microsoft.com/fwlink/?LinkID=760868' >"$VSCODE_DEB"
-  sudo apt install "$VSCODE_DEB"
-  rm "$VSCODE_DEB"
-}
+## Install Visual Studio Code.
+#function install_vscode() {
+#  test $WSL -eq 0 || return 0
+#  test ! -f /usr/bin/code || return 0
+#  local VSCODE_DEB=$(mktemp)
+#  curl -L 'https://go.microsoft.com/fwlink/?LinkID=760868' >"$VSCODE_DEB"
+#  sudo apt install "$VSCODE_DEB"
+#  rm "$VSCODE_DEB"
+#}
 
 # Avoid clock snafu when dual-booting Windows and Linux.
 # See https://www.howtogeek.com/323390/how-to-fix-windows-and-linux-showing-different-times-when-dual-booting/.
@@ -101,33 +112,33 @@ function fix_shm() {
   '
 }
 
-function win_install_fonts() {
-  local DST_DIR
-  DST_DIR=$(wslpath $(cmd.exe /c "echo %LOCALAPPDATA%\Microsoft\\Windows\\Fonts" | sed 's/\r$//'))
-  mkdir -p "$DST_DIR"
-  for SRC in "$@"; do
-    local FILE=$(basename "$SRC")
-    test -f "$DST_DIR/$FILE" || cp -f "$SRC" "$DST_DIR/"
-    local WIN_PATH
-    WIN_PATH=$(wslpath -w "$DST_DIR/$FILE")
-    # Install fond for the current user. It'll appear in "Font settings".
-    reg.exe add \
-      "HKCU\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" \
-      /v "${FILE%.*} (TrueType)"  /t REG_SZ /d "$WIN_PATH" /f
-  done
-  # Install font for the use with Windows Command Prompt. Requires reboot.
-  reg.exe add \
-    "HKCU\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Console\\TrueTypeFont" \
-    /v 1337 /t REG_SZ /d "MesloLGLDZ NF" /f
+#function win_install_fonts() {
+#  local DST_DIR
+#  DST_DIR=$(wslpath $(cmd.exe /c "echo %LOCALAPPDATA%\Microsoft\\Windows\\Fonts" | sed 's/\r$//'))
+#  mkdir -p "$DST_DIR"
+#  for SRC in "$@"; do
+#    local FILE=$(basename "$SRC")
+#    test -f "$DST_DIR/$FILE" || cp -f "$SRC" "$DST_DIR/"
+#    local WIN_PATH
+#    WIN_PATH=$(wslpath -w "$DST_DIR/$FILE")
+#    # Install fond for the current user. It'll appear in "Font settings".
+#    reg.exe add \
+#      "HKCU\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" \
+#      /v "${FILE%.*} (TrueType)"  /t REG_SZ /d "$WIN_PATH" /f
+#  done
+#  # Install font for the use with Windows Command Prompt. Requires reboot.
+#  reg.exe add \
+#    "HKCU\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Console\\TrueTypeFont" \
+#    /v 1337 /t REG_SZ /d "MesloLGLDZ NF" /f
+#
+#}
 
-}
-
-# Install a decent monospace font.
-function install_fonts() {
-  if [[ $WSL == 1 ]]; then
-    win_install_fonts "$HOME"/.local/share/fonts/NerdFonts/*"Windows Compatible.ttf"
-  fi
-}
+## Install a decent monospace font.
+#function install_fonts() {
+#  if [[ $WSL == 1 ]]; then
+#    win_install_fonts "$HOME"/.local/share/fonts/NerdFonts/*"Windows Compatible.ttf"
+#  fi
+#}
 
 function fix_dbus() {
   test $WSL -eq 1 || return 0
@@ -168,8 +179,8 @@ fi
 umask g-w,o-w
 
 install_packages
-install_vscode
-install_fonts
+#install_vscode
+#install_fonts
 
 fix_clock
 fix_shm
