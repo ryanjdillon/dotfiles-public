@@ -49,6 +49,7 @@ function install_packages() {
     p7zip-full
     p7zip-rar
     perl
+    terminator
     tree
     unrar
     wget
