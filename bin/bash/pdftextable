@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Compile a LaTeX table to .pdf and .png formats
+
+# Check for .text file argument
+if [ "$1" != "" ]; then
+    :
+else
+    echo "Usage: comptextable.sh <table.tex>"
+    exit 1
+fi
+
+FILE = $1
+
+pdflatex "\documentclass{article}\usepackage{gensymb}\usepackage{changepage}\usepackage{mathtools}\usepackage{array}\usepackage[usenames, dvipsnames]{color}\begin{document}\pagenumbering{gobble}\input{""$1""}\end{document}"
+
+mv article.pdf "$1"".pdf"
+rm article.*
+rm *.log
+convert -density 300 -trim "$1"".pdf" -quality 100 "$1"".png"

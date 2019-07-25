@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Purge leftovers from last compile
+rm *aux
+rm *blg
+rm *out
+rm *dvi
+rm *log
+rm *bbl
+
+# Filename without extension
+TEX=$1
+
+# Manual compile sequence to assure Bibtex works correctly
+latex "$TEX"".tex"
+bibtex "$TEX"
+latex "$TEX"".tex"
+latex "$TEX"".tex"
+
+# Final pass to create pdf
+pdflatex "$TEX"".tex"

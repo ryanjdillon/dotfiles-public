@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Process all EPS file in passed directory
+
+DIR=$1
+
+for filename in $DIR/*.eps; do
+
+    # Get path and filename without extension
+    base=${filename%.*}
+
+    # Convert EPS to PDF
+    epstopdf "$base"".eps"
+
+    # Crop PDF
+    pdfcrop "$base"".pdf"
+
+    # Convert PDF back to EPS
+    pdftops -eps "$base""-crop.pdf" "$base"".eps"
+done
+
+# Remove the intermediate "crop" pdfs
+rm $DIR/*-crop.pdf
