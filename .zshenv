@@ -1,14 +1,14 @@
 umask 0002
 ulimit -c unlimited
 
-export WSL=$(grep -q Microsoft /proc/version && echo 1 || echo 0)
-export EDITOR=$HOME/bin/redit
+#export WSL=$(grep -q Microsoft /proc/version && echo 1 || echo 0)
+export EDITOR=nvim
 export PAGER=less
-export GOPATH=$HOME/go
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export GOPATH=$HOME/code/go
+#export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 typeset -gaU cdpath fpath mailpath path
-path=($HOME/bin $HOME/.local/bin $HOME/.cargo/bin ${path[@]})
+path=($HOME/bin $HOME/bash $HOME/zsh $HOME/perl $HOME/.local/bin $HOME/.cargo/bin ${path[@]})
 
 # This affects every invocation of `less`.
 #
@@ -24,15 +24,16 @@ if (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
-if (( WSL )); then
-  export DISPLAY=:0
-  export WINDOWS_EDITOR='/mnt/c/Program Files/Notepad++/notepad++.exe'
-  export WIN_TMPDIR=$(wslpath ${$(cd /mnt/c && /mnt/c/Windows/System32/cmd.exe /c "echo %TMP%")%$'\r'})
-fi
+#if (( WSL )); then
+#  export DISPLAY=:0
+#  export WINDOWS_EDITOR='/mnt/c/Program Files/Notepad++/notepad++.exe'
+#  export WIN_TMPDIR=$(wslpath ${$(cd /mnt/c && /mnt/c/Windows/System32/cmd.exe /c "echo %TMP%")%$'\r'})
+#fi
 
 eval $(dircolors -b)
 
-(( WSL )) && local flavor=wsl || local flavor=linux
+#(( WSL )) && local flavor=wsl || local flavor=linux
+local flavor=linux
 typeset -g MACHINE_ID=${(%):-%m}-${flavor}-${HOME:t}
 
 [[ -f $HOME/.zshenv-private ]] && source $HOME/.zshenv-private
