@@ -2,6 +2,15 @@
 My public dotfiles forked from [romkatv/dotfiles-public](https://github.com/romkatv/dotfiles-public).
 
 # Using these
+Firstly, make sure you have the git submodules setup
+```
+# This pulls all the submodules from their respective repos
+git submodule update --init
+
+# Later you can manually update these using the following
+git submodule foreach --recursive git pull
+```
+
 There are two scripts to get things up and running. First run
 `bin/boostrap-dotfiles.sh`, then run `setup-machin.sh`.
 
